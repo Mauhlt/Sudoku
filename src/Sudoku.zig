@@ -117,7 +117,7 @@ test "Init" {
     }
 }
 
-test "Set Index / Unset Index" {
+test "Set/Unset Index" {
     var sudoku: @This() = .init();
 
     sudoku.setIndex(1, 3);
@@ -137,7 +137,7 @@ test "Set Index / Unset Index" {
     testing.expect(sudoku.board1[0][6] == 0);
 }
 
-test "Set Indices / Unset Indices" {
+test "Set/Unset Indices" {
     var sudoku: @This() = .init();
 
     const indices = [_]u8{ 1, 2, 6 };
@@ -150,6 +150,51 @@ test "Set Indices / Unset Indices" {
     testing.expect(sudoku.board1[0][6] == 1);
 
     sudoku.unsetIndices(&indices, &values);
+    testing.expect(sudoku.board1[0][1] == 0);
+    testing.expect(sudoku.board1[0][2] == 0);
+    testing.expect(sudoku.board1[0][6] == 0);
+}
+
+test "Set/Unset SubIndex" {
+    var sudoku: @This() = .init();
+
+    const subindices = [_]SubIndex{
+        .{ .row = 0, .col = 1 },
+        .{ .row = 0, .col = 2 },
+        .{ .row = 0, .col = 6 },
+    };
+    const values = [_]u8{ 1, 2, 6 };
+
+    for (subindices, values) |subindex, value|
+        sudoku.setSubIndex(subindex, value);
+    testing.expect(sudoku.board1[0][1] == 3);
+    testing.expect(sudoku.board1[0][2] == 9);
+    testing.expect(sudoku.board1[0][6] == 1);
+
+    for (subindices, values) |subindex, value|
+        sudoku.unsetSubIndex(subindex, value);
+    testing.expect(sudoku.board1[0][1] == 0);
+    testing.expect(sudoku.board1[0][2] == 0);
+    testing.expect(sudoku.board1[0][6] == 0);
+}
+
+test "Set/Unset SubIndices" {
+    var sudoku: @This() = .init();
+
+    const subindices = [_]SubIndex{
+        .{ .row = 0, .col = 1 },
+        .{ .row = 0, .col = 2 },
+        .{ .row = 0, .col = 6 },
+    };
+    const values = [_]u8{ 1, 2, 6 };
+    sudoku.setSubIndices(&subindices, &values);
+
+    testing.expect(sudoku.board1[0][1] == 3);
+    testing.expect(sudoku.board1[0][2] == 9);
+    testing.expect(sudoku.board1[0][6] == 1);
+
+    sudoku.unsetSubIndices(&subindices, &values);
+
     testing.expect(sudoku.board1[0][1] == 0);
     testing.expect(sudoku.board1[0][2] == 0);
     testing.expect(sudoku.board1[0][6] == 0);
