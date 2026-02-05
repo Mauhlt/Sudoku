@@ -129,10 +129,11 @@ test "Set Index / Unset Index" {
     testing.expect(sudoku.board1[0][6] == 1);
 
     sudoku.unsetIndex(1, 3);
-    testing.expect(sudoku.board1[0][1] == 0);
     sudoku.unsetIndex(2, 9);
-    testing.expect(sudoku.board1[0][2] == 0);
     sudoku.unsetIndex(6, 1);
+
+    testing.expect(sudoku.board1[0][1] == 0);
+    testing.expect(sudoku.board1[0][2] == 0);
     testing.expect(sudoku.board1[0][6] == 0);
 }
 
@@ -147,4 +148,9 @@ test "Set Indices / Unset Indices" {
     testing.expect(sudoku.board1[0][1] == 3);
     testing.expect(sudoku.board1[0][2] == 9);
     testing.expect(sudoku.board1[0][6] == 1);
+
+    sudoku.unsetIndices(&indices, &values);
+    testing.expect(sudoku.board1[0][1] == 0);
+    testing.expect(sudoku.board1[0][2] == 0);
+    testing.expect(sudoku.board1[0][6] == 0);
 }
