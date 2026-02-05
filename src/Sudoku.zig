@@ -1,8 +1,9 @@
 const std = @import("std");
+const testing = std.testing;
 const assert = std.debug.assert;
 const SubIndex = @import("SubIndex.zig");
-/// Solves sudoku automatically
-/// 1. allows putting in
+/// Solves sudoku board automatically
+/// 1. sets up board with values
 ///
 ///
 board1: [9][9]u16, // bit board - shows all possible values
@@ -76,9 +77,10 @@ pub fn solve(self: *@This()) void {
 }
 
 pub fn printPossibities(self: *const @This()) void {
+    std.debug.print("Possibilities:\n", .{});
     for (self.board1) |row| {
         for (row) |col| {
-            std.debug.print("{b} ", .{self.board[row][col]});
+            std.debug.print("{b} ", .{col});
         }
         std.debug.print("\n", .{});
     }
@@ -86,9 +88,10 @@ pub fn printPossibities(self: *const @This()) void {
 }
 
 pub fn print(self: *const @This()) void {
+    std.debug.print("Solution:\n", .{});
     for (self.board2) |row| {
         for (row) |col| {
-            std.debug.print("{c} ", .{self.board[row][col]});
+            std.debug.print("{c} ", .{col});
         }
         std.debug.print("\n", .{});
     }
@@ -100,4 +103,14 @@ pub fn indexToSubIndex(index: usize) SubIndex {
         .row = index / 9,
         .col = index % 9,
     };
+}
+
+test "Init" {
+    const sudoku: @This() = .init();
+    for (sudoku.board1) |row| {
+        for (row) |col| testing.expect(col == 0b111111111);
+    }
+    for (sudoku.board2) |row| {
+        for (row) |col| testing.expect(col == '0');
+    }
 }
