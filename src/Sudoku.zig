@@ -16,52 +16,54 @@ pub fn init() @This() {
     };
 }
 
-pub fn setIndex(self: *@This(), value: u8, index: u8) void {
+pub fn setIndex(self: *@This(), index: u8, value: u8) void {
     assert(value < 9);
     assert(index < 81);
     const subIndex = indexToSubIndex(index);
     self.board1[subIndex.row][subIndex.col] |= @as(u16, 1) << value;
 }
 
-pub fn setIndices(self: *@This(), values: []u8, indices: []u8) void {
+pub fn setIndices(self: *@This(), indices: []u8, values: []u8) void {
     assert(values.len == indices.len);
+    assert(values.len < 81);
     for (values, indices) |value, index|
         self.setIndex(value, index);
 }
 
-pub fn setSubIndex(self: *@This(), value: u8, subIndex: SubIndex) void {
+pub fn setSubIndex(self: *@This(), subIndex: SubIndex, value: u8) void {
     assert(value < 9);
     assert(subIndex.row < 9 and subIndex.col < 9);
     self.board1[subIndex.row][subIndex.col] |= @as(u16, 1) << value;
 }
 
-pub fn setSubIndices(self: *@This(), values: []u8, subIndices: []SubIndex) void {
+pub fn setSubIndices(self: *@This(), subIndices: []SubIndex, values: []u8) void {
     assert(values.len == subIndices.len);
+    assert(values.len < 81);
     for (values, subIndices) |value, subIndex| {
         self.setSubIndex(value, subIndex);
     }
 }
 
-pub fn unsetIndex(self: *@This(), value: u8, index: u8) void {
+pub fn unsetIndex(self: *@This(), index: u8, value: u8) void {
     assert(value < 9);
     assert(index < 81);
     const subIndex = indexToSubIndex(index);
     self.board1[subIndex.row][subIndex.col] &= ~(@as(u16, 1) << value);
 }
 
-pub fn unsetIndices(self: *@This(), values: []u8, indices: []u8) void {
+pub fn unsetIndices(self: *@This(), indices: []u8, values: []u8) void {
     assert(values.len == indices.len);
     for (values, indices) |value, index|
         self.unsetIndex(value, index);
 }
 
-pub fn unsetSubIndex(self: *@This(), value: u8, subIndex: SubIndex) void {
+pub fn unsetSubIndex(self: *@This(), subIndex: SubIndex, value: u8) void {
     assert(value < 9);
     assert(subIndex.row < 9 and subIndex.col < 9);
     self.board1[subIndex.row][subIndex.col] |= @as(u16, 1) << value;
 }
 
-pub fn unsetSubIndices(self: *@This(), values: []u8, subIndices: []u8) void {
+pub fn unsetSubIndices(self: *@This(), subIndices: []u8, values: []u8) void {
     assert(values.len == subIndices.len);
     for (values, subIndices) |value, subIndex|
         self.unsetSubIndex(value, subIndex);
@@ -113,4 +115,10 @@ test "Init" {
     for (sudoku.board2) |row| {
         for (row) |col| testing.expect(col == '0');
     }
+}
+
+test "Set Index" {
+    var sudoku: @This() = .init();
+    sudoku.setIndex(3, 1);
+    sudoku.setIndex(9, 2);
 }
