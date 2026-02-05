@@ -1,2 +1,3 @@
+# Directories to Ignore
 zig-out/
 .zig-cache/
