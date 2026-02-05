@@ -119,6 +119,12 @@ test "Init" {
 
 test "Set Index" {
     var sudoku: @This() = .init();
-    sudoku.setIndex(3, 1);
-    sudoku.setIndex(9, 2);
+
+    sudoku.setIndex(1, 3);
+    sudoku.setIndex(2, 9);
+    sudoku.setIndex(6, 1);
+
+    testing.expect(sudoku.board1[0][1] == 3);
+    testing.expect(sudoku.board1[0][2] == 9);
+    testing.expect(sudoku.board1[0][6] == 1);
 }
