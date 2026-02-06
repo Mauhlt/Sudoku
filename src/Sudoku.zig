@@ -6,21 +6,23 @@ const SubIndex = @import("SubIndex.zig");
 /// Sum of a row/col/block
 const COMPLETED_SUM = blk: {
     var sum: usize = 0;
-    for (0..9) |i| sum += 1;
+    for (0..9) |i| sum += i;
     break :blk sum;
 };
 
 /// Solves sudoku board automatically
 /// 1. sets up board with values
 ///
-///
-board1: [9][9]u16, // bit board - shows all possible values
-board2: [9][9]u8, // board - shows final value as character
+/// Board:
+/// board1 = bit board of all possible values, eliminate possible values as game goes on, use printPossibilities to visualize
+/// board2 = defaults to 255, contains final value for position, use print to visualize
+board1: [9][9]u16,
+board2: [9][9]u8,
 
 pub fn init() @This() {
     return @This(){
         .board1 = @bitCast(@as(@Vector(81, u16), @splat(0b111111111))),
-        .board2 = @bitCast(@as(@Vector(81, u8), @splat('0'))),
+        .board2 = @bitCast(@as(@Vector(81, u8), @splat(255))),
     };
 }
 
