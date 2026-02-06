@@ -89,10 +89,35 @@ pub fn solve(self: *@This()) void {
 }
 
 fn isRowSolved(self: *const @This(), row: usize) bool {
-    return @reduce(.Add, @as(@Vector(9, u8), self.board2[0]));
+    assert(row < 9);
+    var sum: usize = 0;
+    for (0..9) |i|
+        sum += self.board2[row][i];
+
+    return sum == COMPLETED_SUM;
 }
 
-fn isColSolved(self: *const @This(), col: usize) bool {}
+fn isColSolved(self: *const @This(), col: usize) bool {
+    assert(col < 9);
+    var sum: usize = 0;
+    inline for (0..9) |i|
+        sum += self.board2[i][col];
+
+    return sum == COMPLETED_SUM;
+}
+
+fn isBlockSolved(self: *const @This(), block: usize) bool {
+    assert(block < 9);
+    var sum: usize = 0;
+    const start_row: usize = (block / 3);
+    const start_col: usize = block % 3;
+    inline for (0..3) |r| {
+        inline for (0..3) |c| {
+            sum += self.block2[start_row + r][start_col + c];
+        }
+    }
+    return sum == COMPLETED_SUM;
+}
 
 pub fn printPossibities(self: *const @This()) void {
     std.debug.print("Possibilities:\n", .{});
