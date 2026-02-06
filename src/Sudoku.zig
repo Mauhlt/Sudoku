@@ -2,6 +2,14 @@ const std = @import("std");
 const testing = std.testing;
 const assert = std.debug.assert;
 const SubIndex = @import("SubIndex.zig");
+
+/// Sum of a row/col/block
+const COMPLETED_SUM = blk: {
+    var sum: usize = 0;
+    for (0..9) |i| sum += 1;
+    break :blk sum;
+};
+
 /// Solves sudoku board automatically
 /// 1. sets up board with values
 ///
@@ -70,13 +78,19 @@ pub fn unsetSubIndices(self: *@This(), subIndices: []u8, values: []u8) void {
 }
 
 pub fn solve(self: *@This()) void {
-    const v: @Vector(81, u8) = @splat('0');
+    const v: @Vector(81, u8) = @splat(0);
     var i: usize = 0;
     while (@reduce(.Or, @as(@Vector(81, u8), self.board) == v)) : (i += 1) {
         if (i > 10) break;
         self.print();
     }
 }
+
+fn isRowSolved(self: *const @This(), row: usize) bool {
+    return @reduce(.Add, @as(@Vector(9, u8), self.board2[0]));
+}
+
+fn isColSolved(self: *const @This(), col: usize) bool {}
 
 pub fn printPossibities(self: *const @This()) void {
     std.debug.print("Possibilities:\n", .{});
@@ -93,7 +107,7 @@ pub fn print(self: *const @This()) void {
     std.debug.print("Solution:\n", .{});
     for (self.board2) |row| {
         for (row) |col| {
-            std.debug.print("{c} ", .{col});
+            std.debug.print("{c} ", .{col + 'a' - 1});
         }
         std.debug.print("\n", .{});
     }
