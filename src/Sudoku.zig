@@ -29,8 +29,8 @@ pub fn init() @This() {
 pub fn setIndex(self: *@This(), index: u8, value: u8) void {
     assert(value < 9);
     assert(index < 81);
-    const subIndex = indexToSubIndex(index);
-    self.board1[subIndex.row][subIndex.col] |= @as(u16, 1) << value;
+    const sub = indexToSubIndex(index);
+    self.board1[sub.row][sub.col] |= @as(u16, 1) << @truncate(value);
 }
 
 pub fn setIndices(self: *@This(), indices: []u8, values: []u8) void {
@@ -43,7 +43,7 @@ pub fn setIndices(self: *@This(), indices: []u8, values: []u8) void {
 pub fn setSubIndex(self: *@This(), subIndex: SubIndex, value: u8) void {
     assert(value < 9);
     assert(subIndex.row < 9 and subIndex.col < 9);
-    self.board1[subIndex.row][subIndex.col] |= @as(u16, 1) << value;
+    self.board1[subIndex.row][subIndex.col] |= @as(u16, 1) << @truncate(value);
 }
 
 pub fn setSubIndices(self: *@This(), subIndices: []SubIndex, values: []u8) void {
@@ -134,7 +134,10 @@ pub fn print(self: *const @This()) void {
     std.debug.print("Solution:\n", .{});
     for (self.board2) |row| {
         for (row) |col| {
-            std.debug.print("{c} ", .{col + 'a' - 1});
+            if (col < 255)
+                std.debug.print("{c} ", .{col + 'a' - 1})
+            else
+                std.debug.print("0 ", .{});
         }
         std.debug.print("\n", .{});
     }
@@ -239,4 +242,13 @@ test "Set/Unset SubIndices" {
     testing.expect(sudoku.board1[0][1] == 0);
     testing.expect(sudoku.board1[0][2] == 0);
     testing.expect(sudoku.board1[0][6] == 0);
+}
+
+test "Is Row/Col/Block Complete" {
+    var sudoku: @This() = .init();
+    for (0..9) |i| {
+        sudoku.setIndex(@truncate(i), @truncate(i));
+    }
+    sudoku.print();
+    sudoku.printPossibities();
 }
