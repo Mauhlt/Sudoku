@@ -55,5 +55,5 @@ pub fn main() !void {
     sudoku.print();
     sudoku.printPossibilities();
 
-    sudoku.solve();
+    try sudoku.solve();
 }

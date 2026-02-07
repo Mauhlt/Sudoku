@@ -120,11 +120,16 @@ pub fn assignSubIndices(self: *@This(), subindices: []SubIndex, values: []u8) vo
         self.assignSubIndex(subindex, value);
 }
 
-pub fn solve(self: *@This()) void {
+pub fn solve(self: *@This()) !void {
     // Check that board is a valid starting position:
     // 1. no rows or cols or blocks have duplicate values
     for (0..9) |i| {
-        self.isCol
+        if (self.hasRowCollision(i)) {
+            std.debug.print("Row Collision on {}\n", .{i});
+            return error.RowCollision;
+        }
+        if (self.hasColCollision(i)) return error.ColCollision;
+        if (self.hasBlockCollision(i)) return error.BlockCollision;
     }
 
     // const v: @Vector(81, u8) = @splat(0);
@@ -198,18 +203,28 @@ pub fn print(self: *const @This()) void {
 fn hasRowCollision(self: *const @This(), row: usize) bool {
     assert(row < 9);
     for (0..8) |i| {
-        for (i+1..9) |j| {
-            if (self.board1[row][i] == self.board1[row][j]) return true;
+        if (self.board1[row][i] == COMPLETED_NUM) continue;
+        for (i + 1..9) |j| {
+            if (self.board1[row][j] == COMPLETED_NUM) continue;
+            if (self.board1[row][i] == self.board1[row][j]) {
+                std.debug.print("{}x{} - {}x{}: {b}\n", .{ row, i, row, j, self.board1[row][i] });
+                return true;
+            }
         }
-    } 
+    }
     return false;
 }
 
 fn hasColCollision(self: *const @This(), col: usize) bool {
     assert(col < 9);
     for (0..8) |i| {
-        for (i+1..9) |j| {
-            if (self.board1[i][col] == self.board1[j][col]) return true;
+        if (self.board1[i][col] == COMPLETED_NUM) continue;
+        for (i + 1..9) |j| {
+            if (self.board1[i][col] == COMPLETED_NUM) continue;
+            if (self.board1[i][col] == self.board1[j][col]) {
+                std.debug.print("{}x{} - {}x{}: {b}\n", .{ i, col, j, col, self.board1[i][col] });
+                return true;
+            }
         }
     }
     return false;
@@ -221,9 +236,9 @@ fn hasBlockCollision(self: *const @This(), block: usize) bool {
     const start_col = (block % 3) * 3;
     for (0..2) |i| {
         for (0..2) |j| {
-            for (i+1..3) |k| {
-                for (j+1..3) |l| {
-                    if (self.board1[start_row+i][start_col+j] == self.board1[start_row+k][start_col+l])
+            for (i + 1..3) |k| {
+                for (j + 1..3) |l| {
+                    if (self.board1[start_row + i][start_col + j] == self.board1[start_row + k][start_col + l])
                         return true;
                 }
             }
@@ -237,8 +252,7 @@ pub fn printCollisions(self: *const @This()) void {
         for (0..8) |j| {
             if (@popCount(self.board1[i][j]) != 1) continue;
             // check row for duplicates
-            
-for (j + 1..9) |k| {
+            for (j + 1..9) |k| {
                 if (self.board1[i][k] == self.board1[i][j]) {
                     std.debug.print("Row Collision: {}x{} matches {}x{}: {}\n", .{ i, j, i, k, self.board1[i][j] });
                 }
