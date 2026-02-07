@@ -147,27 +147,27 @@ pub fn printCollisions(self: *const @This()) void {
             // check row for duplicates
             for (j + 1..9) |k| {
                 if (self.board1[i][k] == self.board1[i][j]) {
-                    std.debug.print("{}x{} matches {}x{}: {}\n", .{ i, j, i, k, self.board1[i][j] });
+                    std.debug.print("Row Collision: {}x{} matches {}x{}: {}\n", .{ i, j, i, k, self.board1[i][j] });
                 }
             }
 
             // check col for duplicates
             for (i + 1..9) |k| {
                 if (self.board1[i][j] == self.board1[k][j]) {
-                    std.debug.print("{}x{} matches {}x{}: {}\n", .{ i, j, k, j, self.board1[i][j] });
+                    std.debug.print("Col Collision: {}x{} matches {}x{}: {}\n", .{ i, j, k, j, self.board1[i][j] });
                 }
             }
 
             // check block for duplicates
-            const start_row = i / 3;
-            const start_col = i % 3;
-            for (0..3) |k| {
-                for (0..3) |l| {
-                    const row = start_row * 3 + k;
-                    const col = start_col * 3 + l;
-                    if (self.board1[i][j] == self.board1[row][col]) {
-                        std.debug.print("{}x{} matches {}x{}: {}\n", .{ i, j, row, col, self.board1[i][j] });
-                    }
+            const start_row = (i / 3) * 3;
+            const start_col = (j / 3) * 3;
+            for (1..9) |k| {
+                const row = start_row + k / 3;
+                const col = start_col + k % 3;
+                if (i == row and j == col) continue;
+                if (row < i and col < j) continue;
+                if (self.board1[i][j] == self.board1[row][col]) {
+                    std.debug.print("Block Collision: {}x{} matches {}x{}: {}\n", .{ i, j, row, col, self.board1[i][j] });
                 }
             }
         }
