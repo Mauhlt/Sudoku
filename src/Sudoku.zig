@@ -4,11 +4,7 @@ const assert = std.debug.assert;
 const SubIndex = @import("SubIndex.zig");
 
 /// Sum of a row/col/block
-const COMPLETED_SUM = blk: {
-    var sum: usize = 0;
-    for (0..9) |i| sum += i;
-    break :blk sum;
-};
+const COMPLETED_NUM = 0b111111111;
 
 /// Solves sudoku board automatically
 /// 1. sets up board with values
@@ -21,7 +17,7 @@ board2: [9][9]u8,
 
 pub fn init() @This() {
     return @This(){
-        .board1 = @bitCast(@as(@Vector(81, u16), @splat(0b111111111))),
+        .board1 = @bitCast(@as(@Vector(81, u16), @splat(COMPLETED_NUM))),
         .board2 = @bitCast(@as(@Vector(81, u8), @splat(255))),
     };
 }
@@ -88,35 +84,34 @@ pub fn solve(self: *@This()) void {
     }
 }
 
-fn isRowSolved(self: *const @This(), row: usize) bool {
+pub fn isRowSolved(self: *const @This(), row: usize) bool {
     assert(row < 9);
-    var sum: usize = 0;
+    var num: usize = 0;
     for (0..9) |i|
-        sum += self.board2[row][i];
-
-    return sum == COMPLETED_SUM;
+        num |= self.board1[row][i];
+    return num == COMPLETED_NUM;
 }
 
-fn isColSolved(self: *const @This(), col: usize) bool {
+pub fn isColSolved(self: *const @This(), col: usize) bool {
     assert(col < 9);
-    var sum: usize = 0;
+    var num: usize = 0;
     inline for (0..9) |i|
-        sum += self.board2[i][col];
+        num |= self.board2[i][col];
 
-    return sum == COMPLETED_SUM;
+    return num == COMPLETED_NUM;
 }
 
-fn isBlockSolved(self: *const @This(), block: usize) bool {
+pub fn isBlockSolved(self: *const @This(), block: usize) bool {
     assert(block < 9);
     var sum: usize = 0;
     const start_row: usize = (block / 3);
     const start_col: usize = block % 3;
     inline for (0..3) |r| {
         inline for (0..3) |c| {
-            sum += self.block2[start_row + r][start_col + c];
+            sum |= self.board2[start_row + r][start_col + c];
         }
     }
-    return sum == COMPLETED_SUM;
+    return sum == COMPLETED_NUM;
 }
 
 pub fn printPossibities(self: *const @This()) void {
@@ -135,7 +130,7 @@ pub fn print(self: *const @This()) void {
     for (self.board2) |row| {
         for (row) |col| {
             if (col < 255)
-                std.debug.print("{c} ", .{col + 'a' - 1})
+                std.debug.print("{c} ", .{col + '0'})
             else
                 std.debug.print("0 ", .{});
         }
