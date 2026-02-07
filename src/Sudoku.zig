@@ -8,10 +8,17 @@ const COMPLETED_NUM = 0b111111111;
 
 /// Solves sudoku board automatically
 /// 1. sets up board with values
+/// 2. checks if setup is a valid initial setup
 ///
 /// Board:
-/// board1 = bit board of all possible values, eliminate possible values as game goes on, use printPossibilities to visualize
-/// board2 = defaults to 255, contains final value for position, use print to visualize
+/// board1:
+/// - bit board of all possible values
+/// - eliminate possible values as game goes on
+/// - use printPossibilities to visualize
+/// board2:
+/// - defaults to 255
+/// - contains final value for position
+/// - use print to visualize
 board1: [9][9]u16,
 board2: [9][9]u8,
 
@@ -22,6 +29,7 @@ pub fn init() @This() {
     };
 }
 
+/// Sets possibilities board as having that value
 pub fn setIndex(self: *@This(), index: u8, value: u8) void {
     assert(value < 9);
     assert(index < 81);
