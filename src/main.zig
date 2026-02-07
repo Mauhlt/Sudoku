@@ -17,7 +17,7 @@ pub fn main() !void {
     sudoku.assignSubIndex(.{ .row = 1, .col = 5 }, 4);
     sudoku.assignSubIndex(.{ .row = 1, .col = 6 }, 2);
 
-    sudoku.assignSubIndex(.{ .row = 2, .col = 0 }, 1);
+    sudoku.assignSubIndex(.{ .row = 2, .col = 0 }, 0);
     sudoku.assignSubIndex(.{ .row = 2, .col = 2 }, 2);
     sudoku.assignSubIndex(.{ .row = 2, .col = 4 }, 6);
     sudoku.assignSubIndex(.{ .row = 2, .col = 5 }, 8);
@@ -31,11 +31,11 @@ pub fn main() !void {
 
     sudoku.assignSubIndex(.{ .row = 4, .col = 0 }, 6);
     sudoku.assignSubIndex(.{ .row = 4, .col = 1 }, 1);
-    sudoku.assignSubIndex(.{ .row = 4, .col = 5 }, 8);
+    sudoku.assignSubIndex(.{ .row = 4, .col = 6 }, 8);
 
-    sudoku.assignSubIndex(.{ .row = 5, .col = 0 }, 1);
-    sudoku.assignSubIndex(.{ .row = 5, .col = 1 }, 7);
-    sudoku.assignSubIndex(.{ .row = 5, .col = 5 }, 5);
+    sudoku.assignSubIndex(.{ .row = 5, .col = 4 }, 1);
+    sudoku.assignSubIndex(.{ .row = 5, .col = 6 }, 7);
+    sudoku.assignSubIndex(.{ .row = 5, .col = 8 }, 5);
 
     sudoku.assignSubIndex(.{ .row = 6, .col = 2 }, 7);
     sudoku.assignSubIndex(.{ .row = 6, .col = 3 }, 3);

@@ -236,10 +236,14 @@ fn hasBlockCollision(self: *const @This(), block: usize) bool {
     const start_col = (block % 3) * 3;
     for (0..2) |i| {
         for (0..2) |j| {
+            if (self.board1[i][j] == COMPLETED_NUM) continue;
             for (i + 1..3) |k| {
                 for (j + 1..3) |l| {
-                    if (self.board1[start_row + i][start_col + j] == self.board1[start_row + k][start_col + l])
+                    if (self.board1[k][l] == COMPLETED_NUM) continue;
+                    if (self.board1[start_row + i][start_col + j] == self.board1[start_row + k][start_col + l]) {
+                        std.debug.print("{}x{} - {}x{}: {b}\n", .{ i, j, k, l, self.board1[i][j] });
                         return true;
+                    }
                 }
             }
         }
