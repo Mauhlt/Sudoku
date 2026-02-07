@@ -54,4 +54,5 @@ pub fn main() !void {
     sudoku.setSubIndex(.{ .row = 8, .col = 8 }, 1);
 
     sudoku.print();
+    sudoku.printPossibilities();
 }

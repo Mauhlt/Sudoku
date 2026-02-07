@@ -22,14 +22,15 @@ const COMPLETED_NUM = 0b111111111;
 board1: [9][9]u16,
 board2: [9][9]u8,
 
+/// Initializes board
 pub fn init() @This() {
     return @This(){
-        .board1 = @bitCast(@as(@Vector(81, u16), @splat(COMPLETED_NUM))),
+        .board1 = @bitCast(@as(@Vector(81, u16), @splat(0))),
         .board2 = @bitCast(@as(@Vector(81, u8), @splat(255))),
     };
 }
 
-/// Sets possibilities board as having that value
+/// Sets possibilities board to include that value
 pub fn setIndex(self: *@This(), index: u8, value: u8) void {
     assert(value < 9);
     assert(index < 81);
@@ -37,6 +38,7 @@ pub fn setIndex(self: *@This(), index: u8, value: u8) void {
     self.board1[sub.row][sub.col] |= @as(u16, 1) << @truncate(value);
 }
 
+/// Sets possibilities board to have that value
 pub fn setIndices(self: *@This(), indices: []u8, values: []u8) void {
     assert(values.len == indices.len);
     assert(values.len < 81);
@@ -44,12 +46,14 @@ pub fn setIndices(self: *@This(), indices: []u8, values: []u8) void {
         self.setIndex(value, index);
 }
 
+/// Sets value at subindex in possibilities board
 pub fn setSubIndex(self: *@This(), subIndex: SubIndex, value: u8) void {
     assert(value < 9);
     assert(subIndex.row < 9 and subIndex.col < 9);
     self.board1[subIndex.row][subIndex.col] |= @as(u16, 1) << @truncate(value);
 }
 
+/// Sets value at subindices in possibilities board
 pub fn setSubIndices(self: *@This(), subIndices: []SubIndex, values: []u8) void {
     assert(values.len == subIndices.len);
     assert(values.len < 81);
@@ -58,6 +62,7 @@ pub fn setSubIndices(self: *@This(), subIndices: []SubIndex, values: []u8) void 
     }
 }
 
+/// Unsets value from index in possibilities board
 pub fn unsetIndex(self: *@This(), index: u8, value: u8) void {
     assert(value < 9);
     assert(index < 81);
@@ -65,26 +70,59 @@ pub fn unsetIndex(self: *@This(), index: u8, value: u8) void {
     self.board1[subIndex.row][subIndex.col] &= (@as(u16, 1) << @truncate(value));
 }
 
+/// Unsets value from indices in possibilities board
 pub fn unsetIndices(self: *@This(), indices: []u8, values: []u8) void {
     assert(values.len == indices.len);
     for (values, indices) |value, index|
         self.unsetIndex(value, index);
 }
 
+/// Unsets value from subindex in possibilities board
 pub fn unsetSubIndex(self: *@This(), subIndex: SubIndex, value: u8) void {
     assert(value < 9);
     assert(subIndex.row < 9 and subIndex.col < 9);
     self.board1[subIndex.row][subIndex.col] &= @as(u16, 1) << @truncate(value);
 }
 
+/// Unsets value from subindices in possibilities board
 pub fn unsetSubIndices(self: *@This(), subIndices: []u8, values: []u8) void {
     assert(values.len == subIndices.len);
     for (values, subIndices) |value, subIndex|
         self.unsetSubIndex(value, subIndex);
 }
 
+/// Sets index in possibilities board and solution board to this value
+pub fn assignIndex(self: *@This(), index: usize, value: u8) void {
+    const sub = indexToSubIndex(index);
+    self.assignSubIndex(sub, value);
+}
+
+/// Sets indices in possibilities board and solution board to this value
+pub fn assignIndices(self: *@This(), indices: []usize, values: []u8) void {
+    assert(indices.len == values.len);
+    for (indices, values) |index, value|
+        self.assignIndex(index, value);
+}
+
+/// Sets subindex in possibilities board and solution board to this value
+pub fn assignSubIndex(self: *@This(), subindex: SubIndex, value: u8) void {
+    assert(subindex.row < 9 and subindex.col < 9);
+    assert(value < 9);
+    self.board1[subindex.row][subindex.col] = value;
+    self.board2[subindex.row][subindex.col] = value;
+}
+
+/// Sets subindices in possibilities board and solution board to this value
+pub fn assignSubIndices(self: *@This(), subindices: []SubIndex, values: []u8) void {
+    assert(subindices.len == values.len);
+    for (subindices, values) |subindex, value|
+        self.assignSubIndex(subindex, value);
+}
+
 pub fn solve(self: *@This()) void {
     _ = self;
+    // 1. set all 0s to
+
     // const v: @Vector(81, u8) = @splat(0);
     // var i: usize = 0;
     // while (@reduce(.Or, @as(@Vector(81, u8), self.board) == v)) : (i += 1) {
@@ -128,7 +166,7 @@ pub fn isBlockSolved(self: *const @This(), block: usize) bool {
     return sum == COMPLETED_NUM;
 }
 
-pub fn printPossibities(self: *const @This()) void {
+pub fn printPossibilities(self: *const @This()) void {
     std.debug.print("Possibilities:\n", .{});
     for (self.board1) |row| {
         for (row) |col| {
