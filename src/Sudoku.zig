@@ -108,7 +108,8 @@ pub fn assignIndices(self: *@This(), indices: []usize, values: []u8) void {
 pub fn assignSubIndex(self: *@This(), subindex: SubIndex, value: u8) void {
     assert(subindex.row < 9 and subindex.col < 9);
     assert(value < 9);
-    self.board1[subindex.row][subindex.col] = value;
+    self.board1[subindex.row][subindex.col] = 0;
+    self.setSubIndex(subindex, value);
     self.board2[subindex.row][subindex.col] = value;
 }
 
