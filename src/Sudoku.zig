@@ -195,17 +195,17 @@ pub fn print(self: *const @This()) void {
     std.debug.print("\n", .{});
 }
 
-fn isRowCollision(self: *const @This(), row: usize) bool {
+fn hasRowCollision(self: *const @This(), row: usize) bool {
     assert(row < 9);
     for (0..8) |i| {
         for (i+1..9) |j| {
             if (self.board1[row][i] == self.board1[row][j]) return true;
         }
-    }
+    } 
     return false;
 }
 
-fn isColCollision(self: *const @This(), col: usize) bool {
+fn hasColCollision(self: *const @This(), col: usize) bool {
     assert(col < 9);
     for (0..8) |i| {
         for (i+1..9) |j| {
@@ -215,15 +215,21 @@ fn isColCollision(self: *const @This(), col: usize) bool {
     return false;
 }
 
-fn isBlockCollision(self: *const @This(), block: usize) bool {
+fn hasBlockCollision(self: *const @This(), block: usize) bool {
     assert(block < 9);
-    const start_row = block / 3 * 3;
-    const start_col = block % 3;
-    for (0..3) |i| {
-        for (0..3) |j| {
-
+    const start_row = (block / 3) * 3;
+    const start_col = (block % 3) * 3;
+    for (0..2) |i| {
+        for (0..2) |j| {
+            for (i+1..3) |k| {
+                for (j+1..3) |l| {
+                    if (self.board1[start_row+i][start_col+j] == self.board1[start_row+k][start_col+l])
+                        return true;
+                }
+            }
         }
     }
+    return false;
 }
 
 pub fn printCollisions(self: *const @This()) void {
