@@ -58,7 +58,7 @@ pub fn unsetIndex(self: *@This(), index: u8, value: u8) void {
     assert(value < 9);
     assert(index < 81);
     const subIndex = indexToSubIndex(index);
-    self.board1[subIndex.row][subIndex.col] &= ~(@as(u16, 1) << value);
+    self.board1[subIndex.row][subIndex.col] &= (@as(u16, 1) << @truncate(value));
 }
 
 pub fn unsetIndices(self: *@This(), indices: []u8, values: []u8) void {
@@ -70,7 +70,7 @@ pub fn unsetIndices(self: *@This(), indices: []u8, values: []u8) void {
 pub fn unsetSubIndex(self: *@This(), subIndex: SubIndex, value: u8) void {
     assert(value < 9);
     assert(subIndex.row < 9 and subIndex.col < 9);
-    self.board1[subIndex.row][subIndex.col] |= @as(u16, 1) << value;
+    self.board1[subIndex.row][subIndex.col] &= @as(u16, 1) << @truncate(value);
 }
 
 pub fn unsetSubIndices(self: *@This(), subIndices: []u8, values: []u8) void {
