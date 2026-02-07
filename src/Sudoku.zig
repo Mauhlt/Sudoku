@@ -76,12 +76,17 @@ pub fn unsetSubIndices(self: *@This(), subIndices: []u8, values: []u8) void {
 }
 
 pub fn solve(self: *@This()) void {
-    const v: @Vector(81, u8) = @splat(0);
-    var i: usize = 0;
-    while (@reduce(.Or, @as(@Vector(81, u8), self.board) == v)) : (i += 1) {
-        if (i > 10) break;
-        self.print();
-    }
+    _ = self;
+    // const v: @Vector(81, u8) = @splat(0);
+    // var i: usize = 0;
+    // while (@reduce(.Or, @as(@Vector(81, u8), self.board) == v)) : (i += 1) {
+    //     if (i > 10) break;
+    //     self.print();
+    // }
+
+    // Step 1: Loop through each number
+    // Step 2: Check if numbers form a limited possibility
+    // Step 3: Record single possibilities to solution board
 }
 
 pub fn isRowSolved(self: *const @This(), row: usize) bool {

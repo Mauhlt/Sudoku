@@ -5,36 +5,53 @@ const ind2sub = @import("Sudoku.zig").indexToSubIndex;
 pub fn main() !void {
     var sudoku: Sudoku = .init();
 
-    for (0..9) |i| {
-        var curr: usize = i;
-        for (0..9) |j| {
-            if (curr == 9) {
-                curr = 0;
-            }
-            sudoku.board1[i][j] = @as(u16, 1) << @truncate(curr);
-            curr += 1;
-        }
-    }
-
-    // convert possibilities to solo values if popcount == 1
-    for (0..9) |i| {
-        for (0..9) |j| {
-            if (@popCount(sudoku.board1[i][j]) == 1) {
-                sudoku.board2[i][j] = @ctz(sudoku.board1[i][j]) + 1;
-            }
-        }
-    }
-
-    // set first col
-    sudoku.printPossibities();
     sudoku.print();
+    sudoku.setSubIndex(.{ .row = 0, .col = 2 }, 6);
+    sudoku.setSubIndex(.{ .row = 0, .col = 3 }, 7);
+    sudoku.setSubIndex(.{ .row = 0, .col = 5 }, 2);
+    sudoku.setSubIndex(.{ .row = 0, .col = 7 }, 1);
+    sudoku.setSubIndex(.{ .row = 0, .col = 8 }, 8);
 
-    const is_row = sudoku.isRowSolved(1);
-    const is_col = sudoku.isColSolved(4);
-    const is_block = sudoku.isBlockSolved(8);
-    std.debug.print("Row: {}\n", .{is_row});
-    std.debug.print("Col: {}\n", .{is_col});
-    std.debug.print("Block: {}\n", .{is_block});
+    sudoku.setSubIndex(.{ .row = 1, .col = 0 }, 7);
+    sudoku.setSubIndex(.{ .row = 1, .col = 1 }, 8);
+    sudoku.setSubIndex(.{ .row = 1, .col = 2 }, 1);
+    sudoku.setSubIndex(.{ .row = 1, .col = 5 }, 4);
+    sudoku.setSubIndex(.{ .row = 1, .col = 6 }, 2);
 
-    sudoku.printCollisions();
+    sudoku.setSubIndex(.{ .row = 2, .col = 0 }, 1);
+    sudoku.setSubIndex(.{ .row = 2, .col = 2 }, 3);
+    sudoku.setSubIndex(.{ .row = 2, .col = 4 }, 6);
+    sudoku.setSubIndex(.{ .row = 2, .col = 5 }, 8);
+    sudoku.setSubIndex(.{ .row = 2, .col = 7 }, 7);
+
+    sudoku.setSubIndex(.{ .row = 3, .col = 1 }, 7);
+    sudoku.setSubIndex(.{ .row = 3, .col = 3 }, 5);
+    sudoku.setSubIndex(.{ .row = 3, .col = 4 }, 4);
+    sudoku.setSubIndex(.{ .row = 3, .col = 5 }, 1);
+    sudoku.setSubIndex(.{ .row = 3, .col = 8 }, 2);
+
+    sudoku.setSubIndex(.{ .row = 4, .col = 0 }, 7);
+    sudoku.setSubIndex(.{ .row = 4, .col = 1 }, 2);
+    sudoku.setSubIndex(.{ .row = 4, .col = 5 }, 9);
+
+    sudoku.setSubIndex(.{ .row = 5, .col = 0 }, 1);
+    sudoku.setSubIndex(.{ .row = 5, .col = 1 }, 7);
+    sudoku.setSubIndex(.{ .row = 5, .col = 5 }, 5);
+
+    sudoku.setSubIndex(.{ .row = 6, .col = 2 }, 8);
+    sudoku.setSubIndex(.{ .row = 6, .col = 3 }, 4);
+    sudoku.setSubIndex(.{ .row = 6, .col = 5 }, 2);
+    sudoku.setSubIndex(.{ .row = 6, .col = 6 }, 6);
+    sudoku.setSubIndex(.{ .row = 6, .col = 7 }, 1);
+
+    sudoku.setSubIndex(.{ .row = 7, .col = 0 }, 2);
+    sudoku.setSubIndex(.{ .row = 7, .col = 4 }, 1);
+    sudoku.setSubIndex(.{ .row = 7, .col = 7 }, 8);
+    sudoku.setSubIndex(.{ .row = 7, .col = 8 }, 7);
+
+    sudoku.setSubIndex(.{ .row = 8, .col = 1 }, 5);
+    sudoku.setSubIndex(.{ .row = 8, .col = 2 }, 1);
+    sudoku.setSubIndex(.{ .row = 8, .col = 8 }, 2);
+
+    sudoku.print();
 }
