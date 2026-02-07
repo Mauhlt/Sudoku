@@ -54,4 +54,6 @@ pub fn main() !void {
 
     sudoku.print();
     sudoku.printPossibilities();
+
+    sudoku.solve();
 }

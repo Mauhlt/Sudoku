@@ -25,8 +25,8 @@ board2: [9][9]u8,
 /// Initializes board
 pub fn init() @This() {
     return @This(){
-        .board1 = @bitCast(@as(@Vector(81, u16), @splat(0))),
-        .board2 = @bitCast(@as(@Vector(81, u8), @splat(255))),
+        .board1 = @bitCast(@as(@Vector(81, u16), @splat(COMPLETED_NUM))),
+        .board2 = @bitCast(@as(@Vector(81, u8), @splat(std.math.maxInt(u8)))),
     };
 }
 
@@ -121,8 +121,11 @@ pub fn assignSubIndices(self: *@This(), subindices: []SubIndex, values: []u8) vo
 }
 
 pub fn solve(self: *@This()) void {
-    _ = self;
-    // 1. set all 0s to
+    // Check that board is a valid starting position:
+    // 1. no rows or cols or blocks have duplicate values
+    for (0..9) |i| {
+        self.isCol
+    }
 
     // const v: @Vector(81, u8) = @splat(0);
     // var i: usize = 0;
@@ -192,12 +195,44 @@ pub fn print(self: *const @This()) void {
     std.debug.print("\n", .{});
 }
 
+fn isRowCollision(self: *const @This(), row: usize) bool {
+    assert(row < 9);
+    for (0..8) |i| {
+        for (i+1..9) |j| {
+            if (self.board1[row][i] == self.board1[row][j]) return true;
+        }
+    }
+    return false;
+}
+
+fn isColCollision(self: *const @This(), col: usize) bool {
+    assert(col < 9);
+    for (0..8) |i| {
+        for (i+1..9) |j| {
+            if (self.board1[i][col] == self.board1[j][col]) return true;
+        }
+    }
+    return false;
+}
+
+fn isBlockCollision(self: *const @This(), block: usize) bool {
+    assert(block < 9);
+    const start_row = block / 3 * 3;
+    const start_col = block % 3;
+    for (0..3) |i| {
+        for (0..3) |j| {
+
+        }
+    }
+}
+
 pub fn printCollisions(self: *const @This()) void {
     for (0..8) |i| {
         for (0..8) |j| {
             if (@popCount(self.board1[i][j]) != 1) continue;
             // check row for duplicates
-            for (j + 1..9) |k| {
+            
+for (j + 1..9) |k| {
                 if (self.board1[i][k] == self.board1[i][j]) {
                     std.debug.print("Row Collision: {}x{} matches {}x{}: {}\n", .{ i, j, i, k, self.board1[i][j] });
                 }
