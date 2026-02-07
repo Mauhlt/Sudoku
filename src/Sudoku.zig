@@ -276,9 +276,36 @@ test "Set/Unset SubIndices" {
 
 test "Is Row/Col/Block Complete" {
     var sudoku: @This() = .init();
+
     for (0..9) |i| {
-        sudoku.setIndex(@truncate(i), @truncate(i));
+        var curr: usize = i;
+        for (0..9) |j| {
+            if (curr == 9) {
+                curr = 0;
+            }
+            sudoku.board1[i][j] = @as(u16, 1) << @truncate(curr);
+            curr += 1;
+        }
     }
-    sudoku.print();
-    sudoku.printPossibities();
+
+    // convert possibilities to solo values if popcount == 1
+    for (0..9) |i| {
+        for (0..9) |j| {
+            if (@popCount(sudoku.board1[i][j]) == 1) {
+                sudoku.board2[i][j] = @ctz(sudoku.board1[i][j]) + 1;
+            }
+        }
+    }
+
+    // set first col
+    // sudoku.printPossibities();
+    // sudoku.print();
+
+    const is_row = sudoku.isRowSolved(1);
+    const is_col = sudoku.isColSolved(4);
+    const is_block = sudoku.isBlockSolved(8);
+
+    try testing.expect(is_row == true);
+    try testing.expect(is_col == true);
+    try testing.expect(is_block == false);
 }
