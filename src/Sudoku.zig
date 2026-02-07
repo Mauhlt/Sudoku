@@ -87,7 +87,7 @@ pub fn solve(self: *@This()) void {
 pub fn isRowSolved(self: *const @This(), row: usize) bool {
     assert(row < 9);
     var num: usize = 0;
-    for (0..9) |i|
+    inline for (0..9) |i|
         num |= self.board1[row][i];
     return num == COMPLETED_NUM;
 }
@@ -96,7 +96,7 @@ pub fn isColSolved(self: *const @This(), col: usize) bool {
     assert(col < 9);
     var num: usize = 0;
     inline for (0..9) |i|
-        num |= self.board2[i][col];
+        num |= self.board1[i][col];
 
     return num == COMPLETED_NUM;
 }
@@ -108,9 +108,10 @@ pub fn isBlockSolved(self: *const @This(), block: usize) bool {
     const start_col: usize = block % 3;
     inline for (0..3) |r| {
         inline for (0..3) |c| {
-            sum |= self.board2[start_row + r][start_col + c];
+            sum |= self.board1[start_row * 3 + r][start_col * 3 + c];
         }
     }
+    std.debug.print("{}\n", .{sum});
     return sum == COMPLETED_NUM;
 }
 
@@ -137,6 +138,40 @@ pub fn print(self: *const @This()) void {
         std.debug.print("\n", .{});
     }
     std.debug.print("\n", .{});
+}
+
+pub fn printCollisions(self: *const @This()) void {
+    for (0..8) |i| {
+        for (0..8) |j| {
+            if (@popCount(self.board1[i][j]) != 1) continue;
+            // check row for duplicates
+            for (j + 1..9) |k| {
+                if (self.board1[i][k] == self.board1[i][j]) {
+                    std.debug.print("{}x{} matches {}x{}: {}\n", .{ i, j, i, k, self.board1[i][j] });
+                }
+            }
+
+            // check col for duplicates
+            for (i + 1..9) |k| {
+                if (self.board1[i][j] == self.board1[k][j]) {
+                    std.debug.print("{}x{} matches {}x{}: {}\n", .{ i, j, k, j, self.board1[i][j] });
+                }
+            }
+
+            // check block for duplicates
+            const start_row = i / 3;
+            const start_col = i % 3;
+            for (0..3) |k| {
+                for (0..3) |l| {
+                    const row = start_row * 3 + k;
+                    const col = start_col * 3 + l;
+                    if (self.board1[i][j] == self.board1[row][col]) {
+                        std.debug.print("{}x{} matches {}x{}: {}\n", .{ i, j, row, col, self.board1[i][j] });
+                    }
+                }
+            }
+        }
+    }
 }
 
 pub fn indexToSubIndex(index: usize) SubIndex {

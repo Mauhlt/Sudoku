@@ -20,7 +20,6 @@ pub fn main() !void {
     for (0..9) |i| {
         for (0..9) |j| {
             if (@popCount(sudoku.board1[i][j]) == 1) {
-                std.debug.print("{}\n", .{@ctz(sudoku.board1[i][j])});
                 sudoku.board2[i][j] = @ctz(sudoku.board1[i][j]) + 1;
             }
         }
@@ -36,4 +35,6 @@ pub fn main() !void {
     std.debug.print("Row: {}\n", .{is_row});
     std.debug.print("Col: {}\n", .{is_col});
     std.debug.print("Block: {}\n", .{is_block});
+
+    sudoku.printCollisions();
 }
